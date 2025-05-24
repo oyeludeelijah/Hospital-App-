@@ -51,3 +51,6 @@ A comprehensive hospital management application built with C# and .NET.
 - `HospitalApp.Data` - Data access layer with Entity Framework
 - `HospitalApp.WPF` - WPF UI application
 - `HospitalApp.Tests` - Unit and integration tests
+
+
+CHANGE
