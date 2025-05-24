@@ -1,0 +1,163 @@
+<Window x:Class="HospitalApp.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HospitalApp.WPF"
+        xmlns:views="clr-namespace:HospitalApp.WPF.Views"
+        mc:Ignorable="d"
+        Title="Hospital Management System" 
+        Height="720" 
+        Width="1280" 
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="{StaticResource PrimaryBrush}" 
+                Padding="16,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" 
+                            Orientation="Horizontal">
+                    <TextBlock Text="Hospital Management System" 
+                               Foreground="{StaticResource TextOnPrimaryBrush}" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" 
+                            Orientation="Horizontal" 
+                            Visibility="{Binding IsUserLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="{Binding CurrentUserName}" 
+                               Foreground="{StaticResource TextOnPrimaryBrush}" 
+                               VerticalAlignment="Center" 
+                               Margin="0,0,16,0"/>
+                    <Button Content="Logout" 
+                            Command="{Binding LogoutCommand}" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            Foreground="{StaticResource TextOnPrimaryBrush}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar Navigation -->
+            <Border Grid.Column="0" 
+                    Background="{StaticResource SurfaceBrush}" 
+                    BorderBrush="{StaticResource TextDisabledBrush}" 
+                    BorderThickness="0,0,1,0" 
+                    Width="250" 
+                    Visibility="{Binding IsUserLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Margin="8">
+                    <Button Content="Dashboard" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="Dashboard" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Patients" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="PatientList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Appointments" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="AppointmentList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Doctors" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="DoctorList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Medical Records" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="MedicalRecordList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Billing" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="BillingList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Inventory" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="InventoryList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                    
+                    <Button Content="Reports" 
+                            Command="{Binding NavigateToCommand}" 
+                            CommandParameter="ReportList" 
+                            Style="{StaticResource TextButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Padding="16,12" 
+                            Margin="0,4"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Content Area -->
+            <Border Grid.Column="1" 
+                    Background="{StaticResource BackgroundBrush}" 
+                    Padding="16">
+                <ContentControl Content="{Binding CurrentView}"/>
+            </Border>
+        </Grid>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" 
+                Background="{StaticResource SurfaceBrush}" 
+                BorderBrush="{StaticResource TextDisabledBrush}" 
+                BorderThickness="0,1,0,0" 
+                Padding="16,8">
+            <TextBlock Text="© 2025 Hospital Management System" 
+                       Foreground="{StaticResource TextSecondaryBrush}" 
+                       HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>
