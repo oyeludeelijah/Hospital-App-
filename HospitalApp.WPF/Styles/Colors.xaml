@@ -30,7 +30,7 @@
     <Color x:Key="TextOnPrimaryColor">#FFFFFF</Color>
     <Color x:Key="TextOnSecondaryColor">#FFFFFF</Color>
     
-    <!-- Brushes -->
+    <!-- Brush Resources -->
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
     <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLightColor}"/>
     <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}"/>
