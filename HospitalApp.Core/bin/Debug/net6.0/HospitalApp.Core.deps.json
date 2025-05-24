@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "HospitalApp.Core/1.0.0": {
+        "runtime": {
+          "HospitalApp.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HospitalApp.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

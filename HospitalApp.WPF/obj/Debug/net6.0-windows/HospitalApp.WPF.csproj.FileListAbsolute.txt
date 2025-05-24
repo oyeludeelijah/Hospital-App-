@@ -1,0 +1,15 @@
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\HospitalApp.WPF.csproj.AssemblyReference.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Styles\Buttons.baml
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Styles\Colors.baml
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Styles\TextBlocks.baml
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Styles\TextBoxes.baml
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\MainWindow.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Views\AppointmentDetailsView.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Views\DashboardView.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Views\InvoiceDetailsView.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Views\LoginView.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Views\MedicalRecordDetailsView.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\Views\PatientDetailsView.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\App.g.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\HospitalApp.WPF_MarkupCompile.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.WPF\obj\Debug\net6.0-windows\HospitalApp.WPF_MarkupCompile.lref

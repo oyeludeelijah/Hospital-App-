@@ -1,0 +1,12 @@
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\bin\Debug\net6.0\HospitalApp.Core.deps.json
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\bin\Debug\net6.0\HospitalApp.Core.dll
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\bin\Debug\net6.0\HospitalApp.Core.pdb
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.AssemblyInfoInputs.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.AssemblyInfo.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.csproj.CoreCompileInputs.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.sourcelink.json
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.dll
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\refint\HospitalApp.Core.dll
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\HospitalApp.Core.pdb
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\HospitalApp.Core\obj\Debug\net6.0\ref\HospitalApp.Core.dll
