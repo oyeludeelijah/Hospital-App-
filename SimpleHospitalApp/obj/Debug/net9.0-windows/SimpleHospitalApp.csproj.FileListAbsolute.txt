@@ -1,0 +1,15 @@
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\bin\Debug\net9.0-windows\SimpleHospitalApp.exe
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\bin\Debug\net9.0-windows\SimpleHospitalApp.deps.json
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\bin\Debug\net9.0-windows\SimpleHospitalApp.runtimeconfig.json
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\bin\Debug\net9.0-windows\SimpleHospitalApp.dll
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\bin\Debug\net9.0-windows\SimpleHospitalApp.pdb
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.AssemblyInfoInputs.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.AssemblyInfo.cs
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.csproj.CoreCompileInputs.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.sourcelink.json
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.dll
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\refint\SimpleHospitalApp.dll
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.pdb
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\SimpleHospitalApp.genruntimeconfig.cache
+C:\Users\USER\Desktop\Everything\dev🧑🏾‍💻\Hospital_App\SimpleHospitalApp\obj\Debug\net9.0-windows\ref\SimpleHospitalApp.dll
