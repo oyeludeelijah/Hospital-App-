@@ -120,8 +120,8 @@ namespace SimpleHospitalApp
                     PatientName = patients.FirstOrDefault(p => p.Id == a.PatientId)?.FullName ?? "Unknown",
                     DoctorName = doctors.FirstOrDefault(d => d.Id == a.DoctorId)?.FullName ?? "Unknown",
                     AppointmentDate = a.AppointmentDate,
-                    Purpose = a.Purpose,
-                    Status = a.Status
+                    Purpose = a.Purpose ?? string.Empty,
+                    Status = a.Status ?? "Scheduled"
                 }).OrderBy(a => a.AppointmentDate).ToList());
             
             dgvAppointments.DataSource = bindingList;
@@ -154,8 +154,8 @@ namespace SimpleHospitalApp
                     PatientName = patients.FirstOrDefault(p => p.Id == a.PatientId)?.FullName ?? "Unknown",
                     DoctorName = doctors.FirstOrDefault(d => d.Id == a.DoctorId)?.FullName ?? "Unknown",
                     AppointmentDate = a.AppointmentDate,
-                    Purpose = a.Purpose,
-                    Status = a.Status
+                    Purpose = a.Purpose ?? string.Empty,
+                    Status = a.Status ?? "Scheduled"
                 }).OrderBy(a => a.AppointmentDate).ToList());
         }
         

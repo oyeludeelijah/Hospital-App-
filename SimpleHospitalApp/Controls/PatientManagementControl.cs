@@ -130,8 +130,8 @@ namespace SimpleHospitalApp
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 patients = patients.Where(p => 
-                    p.FirstName.ToLower().Contains(searchTerm) || 
-                    p.LastName.ToLower().Contains(searchTerm)).ToList();
+                    (p.FirstName ?? string.Empty).ToLower().Contains(searchTerm) || 
+                    (p.LastName ?? string.Empty).ToLower().Contains(searchTerm)).ToList();
             }
             
             dgvPatients.DataSource = new BindingList<PatientViewModel>(

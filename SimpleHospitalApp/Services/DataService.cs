@@ -11,6 +11,9 @@ namespace SimpleHospitalApp.Services
         private List<Patient> _patients;
         private List<Doctor> _doctors;
         private List<Appointment> _appointments;
+        private List<Billing> _billings;
+        private List<Department> _departments;
+        private List<MedicalRecord> _medicalRecords;
 
         // Singleton instance
         private static DataService? _instance;
@@ -22,12 +25,37 @@ namespace SimpleHospitalApp.Services
             _patients = new List<Patient>();
             _doctors = new List<Doctor>();
             _appointments = new List<Appointment>();
+            _billings = new List<Billing>();
+            _departments = new List<Department>();
+            _medicalRecords = new List<MedicalRecord>();
 
             SeedSampleData();
         }
 
         private void SeedSampleData()
         {
+            // Sample departments
+            _departments.Add(new Department
+            {
+                Id = 1,
+                Name = "Cardiology",
+                Description = "Heart and cardiovascular system"
+            });
+            
+            _departments.Add(new Department
+            {
+                Id = 2,
+                Name = "Pediatrics",
+                Description = "Medical care for infants, children, and adolescents"
+            });
+            
+            _departments.Add(new Department
+            {
+                Id = 3,
+                Name = "Orthopedics",
+                Description = "Musculoskeletal system - bones, joints, ligaments"
+            });
+            
             // Sample doctors
             _doctors.Add(new Doctor
             {
@@ -36,7 +64,8 @@ namespace SimpleHospitalApp.Services
                 LastName = "Smith",
                 Specialization = "Cardiology",
                 ContactNumber = "555-1234",
-                Email = "john.smith@hospital.com"
+                Email = "john.smith@hospital.com",
+                DepartmentId = 1
             });
 
             _doctors.Add(new Doctor
@@ -46,7 +75,8 @@ namespace SimpleHospitalApp.Services
                 LastName = "Johnson",
                 Specialization = "Pediatrics",
                 ContactNumber = "555-5678",
-                Email = "sarah.johnson@hospital.com"
+                Email = "sarah.johnson@hospital.com",
+                DepartmentId = 2
             });
 
             // Sample patients
@@ -191,6 +221,105 @@ namespace SimpleHospitalApp.Services
             if (appointment != null)
             {
                 _appointments.Remove(appointment);
+            }
+        }
+        
+        // Billing methods
+        public List<Billing> GetAllBillings() => _billings;
+        
+        public Billing? GetBillingById(int id) => _billings.FirstOrDefault(b => b.Id == id);
+        
+        public List<Billing> GetBillingsByPatient(int patientId) => 
+            _billings.Where(b => b.PatientId == patientId).ToList();
+        
+        public void AddBilling(Billing billing)
+        {
+            billing.Id = _billings.Count > 0 ? _billings.Max(b => b.Id) + 1 : 1;
+            _billings.Add(billing);
+        }
+        
+        public void UpdateBilling(Billing billing)
+        {
+            var existingBilling = _billings.FirstOrDefault(b => b.Id == billing.Id);
+            if (existingBilling != null)
+            {
+                int index = _billings.IndexOf(existingBilling);
+                _billings[index] = billing;
+            }
+        }
+        
+        public void DeleteBilling(int id)
+        {
+            var billing = _billings.FirstOrDefault(b => b.Id == id);
+            if (billing != null)
+            {
+                _billings.Remove(billing);
+            }
+        }
+        
+        // Department methods
+        public List<Department> GetAllDepartments() => _departments;
+        
+        public Department? GetDepartmentById(int id) => _departments.FirstOrDefault(d => d.Id == id);
+        
+        public List<Doctor> GetDoctorsByDepartment(int departmentId) => 
+            _doctors.Where(d => d.DepartmentId == departmentId).ToList();
+        
+        public void AddDepartment(Department department)
+        {
+            department.Id = _departments.Count > 0 ? _departments.Max(d => d.Id) + 1 : 1;
+            _departments.Add(department);
+        }
+        
+        public void UpdateDepartment(Department department)
+        {
+            var existingDepartment = _departments.FirstOrDefault(d => d.Id == department.Id);
+            if (existingDepartment != null)
+            {
+                int index = _departments.IndexOf(existingDepartment);
+                _departments[index] = department;
+            }
+        }
+        
+        public void DeleteDepartment(int id)
+        {
+            var department = _departments.FirstOrDefault(d => d.Id == id);
+            if (department != null)
+            {
+                _departments.Remove(department);
+            }
+        }
+        
+        // Medical Record methods
+        public List<MedicalRecord> GetAllMedicalRecords() => _medicalRecords;
+        
+        public MedicalRecord? GetMedicalRecordById(int id) => _medicalRecords.FirstOrDefault(m => m.Id == id);
+        
+        public List<MedicalRecord> GetMedicalRecordsByPatient(int patientId) => 
+            _medicalRecords.Where(m => m.PatientId == patientId).ToList();
+        
+        public void AddMedicalRecord(MedicalRecord record)
+        {
+            record.Id = _medicalRecords.Count > 0 ? _medicalRecords.Max(m => m.Id) + 1 : 1;
+            _medicalRecords.Add(record);
+        }
+        
+        public void UpdateMedicalRecord(MedicalRecord record)
+        {
+            var existingRecord = _medicalRecords.FirstOrDefault(m => m.Id == record.Id);
+            if (existingRecord != null)
+            {
+                int index = _medicalRecords.IndexOf(existingRecord);
+                _medicalRecords[index] = record;
+            }
+        }
+        
+        public void DeleteMedicalRecord(int id)
+        {
+            var record = _medicalRecords.FirstOrDefault(m => m.Id == id);
+            if (record != null)
+            {
+                _medicalRecords.Remove(record);
             }
         }
     }

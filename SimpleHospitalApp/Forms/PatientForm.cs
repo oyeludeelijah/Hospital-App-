@@ -218,7 +218,7 @@ namespace SimpleHospitalApp
             _patient.FirstName = txtFirstName.Text.Trim();
             _patient.LastName = txtLastName.Text.Trim();
             _patient.DateOfBirth = dtpDateOfBirth.Value;
-            _patient.Gender = cboGender.SelectedItem.ToString() ?? "Unknown";
+            _patient.Gender = cboGender.SelectedItem?.ToString() ?? "Unknown";
             _patient.ContactNumber = txtContactNumber.Text.Trim();
             _patient.Email = txtEmail.Text.Trim();
             _patient.Address = txtAddress.Text.Trim();

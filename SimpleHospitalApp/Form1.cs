@@ -8,6 +8,9 @@ public partial class Form1 : Form
     private Button btnPatients;
     private Button btnDoctors;
     private Button btnAppointments;
+    private Button btnBilling;
+    private Button btnDepartments;
+    private Button btnMedicalRecords;
     private Label lblTitle;
     private Panel pnlContent;
     
@@ -56,9 +59,30 @@ public partial class Form1 : Form
         btnAppointments.BackColor = SystemColors.Control;
         btnAppointments.Font = new Font("Arial", 10, FontStyle.Bold);
         
+        btnBilling = new Button();
+        btnBilling.Text = "Billing";
+        btnBilling.Size = new Size(150, 40);
+        btnBilling.Location = new Point(530, 80);
+        btnBilling.BackColor = SystemColors.Control;
+        btnBilling.Font = new Font("Arial", 10, FontStyle.Bold);
+        
+        btnDepartments = new Button();
+        btnDepartments.Text = "Departments";
+        btnDepartments.Size = new Size(150, 40);
+        btnDepartments.Location = new Point(700, 80);
+        btnDepartments.BackColor = SystemColors.Control;
+        btnDepartments.Font = new Font("Arial", 10, FontStyle.Bold);
+        
+        btnMedicalRecords = new Button();
+        btnMedicalRecords.Text = "Medical Records";
+        btnMedicalRecords.Size = new Size(150, 40);
+        btnMedicalRecords.Location = new Point(20, 130);
+        btnMedicalRecords.BackColor = SystemColors.Control;
+        btnMedicalRecords.Font = new Font("Arial", 10, FontStyle.Bold);
+        
         // Create content panel
         pnlContent = new Panel();
-        pnlContent.Location = new Point(20, 140);
+        pnlContent.Location = new Point(20, 180);
         pnlContent.Size = new Size(940, 400);
         pnlContent.BorderStyle = BorderStyle.FixedSingle;
         
@@ -67,6 +91,9 @@ public partial class Form1 : Form
         this.Controls.Add(btnPatients);
         this.Controls.Add(btnDoctors);
         this.Controls.Add(btnAppointments);
+        this.Controls.Add(btnBilling);
+        this.Controls.Add(btnDepartments);
+        this.Controls.Add(btnMedicalRecords);
         this.Controls.Add(pnlContent);
         
         // Show welcome message
@@ -78,6 +105,9 @@ public partial class Form1 : Form
         btnPatients.Click += (s, e) => ShowPatientManagement();
         btnDoctors.Click += (s, e) => ShowDoctorManagement();
         btnAppointments.Click += (s, e) => ShowAppointmentManagement();
+        btnBilling.Click += (s, e) => ShowBillingManagement();
+        btnDepartments.Click += (s, e) => ShowDepartmentManagement();
+        btnMedicalRecords.Click += (s, e) => ShowMedicalRecordManagement();
     }
     
     private void ShowWelcomeMessage()
@@ -96,7 +126,10 @@ public partial class Form1 : Form
                              "Use the buttons above to navigate between different modules.\n\n" +
                              "• Patients: Manage patient records\n" +
                              "• Doctors: Manage doctor information\n" +
-                             "• Appointments: Schedule and manage appointments";
+                             "• Appointments: Schedule and manage appointments\n" +
+                             "• Billing: Manage payments and invoices\n" +
+                             "• Departments: Manage hospital departments\n" +
+                             "• Medical Records: Create and track patient medical records";
         lblInstructions.Font = new Font("Arial", 12);
         lblInstructions.Location = new Point(20, 70);
         lblInstructions.Size = new Size(900, 300);
@@ -127,5 +160,29 @@ public partial class Form1 : Form
         AppointmentManagementControl appointmentControl = new AppointmentManagementControl();
         appointmentControl.Dock = DockStyle.Fill;
         pnlContent.Controls.Add(appointmentControl);
+    }
+    
+    private void ShowBillingManagement()
+    {
+        pnlContent.Controls.Clear();
+        BillingManagementControl billingControl = new BillingManagementControl();
+        billingControl.Dock = DockStyle.Fill;
+        pnlContent.Controls.Add(billingControl);
+    }
+    
+    private void ShowDepartmentManagement()
+    {
+        pnlContent.Controls.Clear();
+        DepartmentManagementControl departmentControl = new DepartmentManagementControl();
+        departmentControl.Dock = DockStyle.Fill;
+        pnlContent.Controls.Add(departmentControl);
+    }
+    
+    private void ShowMedicalRecordManagement()
+    {
+        pnlContent.Controls.Clear();
+        MedicalRecordManagementControl medicalRecordControl = new MedicalRecordManagementControl();
+        medicalRecordControl.Dock = DockStyle.Fill;
+        pnlContent.Controls.Add(medicalRecordControl);
     }
 }

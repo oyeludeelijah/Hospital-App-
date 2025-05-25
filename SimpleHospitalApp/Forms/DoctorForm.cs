@@ -172,7 +172,7 @@ namespace SimpleHospitalApp
             
             _doctor.FirstName = txtFirstName.Text.Trim();
             _doctor.LastName = txtLastName.Text.Trim();
-            _doctor.Specialization = cboSpecialization.SelectedItem.ToString() ?? "General";
+            _doctor.Specialization = cboSpecialization.SelectedItem?.ToString() ?? "General";
             _doctor.ContactNumber = txtContactNumber.Text.Trim();
             _doctor.Email = txtEmail.Text.Trim();
             

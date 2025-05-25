@@ -245,8 +245,8 @@ namespace SimpleHospitalApp
                 _appointment = new Appointment();
             }
             
-            _appointment.PatientId = ((Patient)cboPatient.SelectedItem).Id;
-            _appointment.DoctorId = ((Doctor)cboDoctor.SelectedItem).Id;
+            _appointment.PatientId = cboPatient.SelectedItem != null ? ((Patient)cboPatient.SelectedItem).Id : 0;
+            _appointment.DoctorId = cboDoctor.SelectedItem != null ? ((Doctor)cboDoctor.SelectedItem).Id : 0;
             
             // Combine date and time
             DateTime dateValue = dtpDate.Value.Date;
@@ -254,7 +254,7 @@ namespace SimpleHospitalApp
             _appointment.AppointmentDate = dateValue.Add(timeValue.TimeOfDay);
             
             _appointment.Purpose = txtPurpose.Text.Trim();
-            _appointment.Status = cboStatus.SelectedItem.ToString() ?? "Scheduled";
+            _appointment.Status = cboStatus.SelectedItem?.ToString() ?? "Scheduled";
             _appointment.Notes = txtNotes.Text.Trim();
             
             // Save to data service
