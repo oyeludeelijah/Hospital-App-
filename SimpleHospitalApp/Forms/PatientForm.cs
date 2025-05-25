@@ -153,7 +153,7 @@ namespace SimpleHospitalApp
             btnSave.Text = "Save";
             btnSave.Location = new Point(150, 440);
             btnSave.Size = new Size(100, 30);
-            btnSave.BackColor = Color.LightGreen;
+            btnSave.BackColor = SystemColors.ButtonFace;
             btnSave.Click += (s, e) => SavePatient();
             
             btnCancel = new Button();

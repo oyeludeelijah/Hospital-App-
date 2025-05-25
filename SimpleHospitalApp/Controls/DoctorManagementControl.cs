@@ -45,9 +45,9 @@ namespace SimpleHospitalApp
             txtSearch.Size = new Size(200, 25);
             
             btnSearch = new Button();
-            btnSearch.Text = "Search";
+            btnSearch.Text = "Find";
             btnSearch.Location = new Point(740, 10);
-            btnSearch.Size = new Size(80, 25);
+            btnSearch.Size = new Size(60, 25);
             btnSearch.Click += (s, e) => SearchDoctors();
             
             // Create DataGridView
@@ -68,22 +68,22 @@ namespace SimpleHospitalApp
             btnAdd = new Button();
             btnAdd.Text = "Add Doctor";
             btnAdd.Location = new Point(830, 50);
-            btnAdd.Size = new Size(100, 30);
-            btnAdd.BackColor = Color.LightGreen;
+            btnAdd.Size = new Size(110, 30);
+            btnAdd.BackColor = SystemColors.ButtonFace;
             btnAdd.Click += (s, e) => AddDoctor();
             
             btnEdit = new Button();
             btnEdit.Text = "Edit";
             btnEdit.Location = new Point(830, 90);
             btnEdit.Size = new Size(100, 30);
-            btnEdit.BackColor = Color.LightBlue;
+            btnEdit.BackColor = SystemColors.ButtonFace;
             btnEdit.Click += (s, e) => EditDoctor();
             
             btnDelete = new Button();
             btnDelete.Text = "Delete";
             btnDelete.Location = new Point(830, 130);
             btnDelete.Size = new Size(100, 30);
-            btnDelete.BackColor = Color.LightPink;
+            btnDelete.BackColor = SystemColors.ButtonFace;
             btnDelete.Click += (s, e) => DeleteDoctor();
             
             // Add controls

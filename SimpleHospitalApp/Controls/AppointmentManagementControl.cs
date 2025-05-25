@@ -46,9 +46,9 @@ namespace SimpleHospitalApp
             dtpFilter.Format = DateTimePickerFormat.Short;
             
             btnFilter = new Button();
-            btnFilter.Text = "Filter by Date";
+            btnFilter.Text = "Filter";
             btnFilter.Location = new Point(680, 10);
-            btnFilter.Size = new Size(100, 25);
+            btnFilter.Size = new Size(60, 25);
             btnFilter.Click += (s, e) => FilterAppointments();
             
             btnClearFilter = new Button();
@@ -75,22 +75,22 @@ namespace SimpleHospitalApp
             btnAdd = new Button();
             btnAdd.Text = "Add Appointment";
             btnAdd.Location = new Point(830, 50);
-            btnAdd.Size = new Size(100, 30);
-            btnAdd.BackColor = Color.LightGreen;
+            btnAdd.Size = new Size(110, 30);
+            btnAdd.BackColor = SystemColors.ButtonFace;
             btnAdd.Click += (s, e) => AddAppointment();
             
             btnEdit = new Button();
             btnEdit.Text = "Edit";
             btnEdit.Location = new Point(830, 90);
             btnEdit.Size = new Size(100, 30);
-            btnEdit.BackColor = Color.LightBlue;
+            btnEdit.BackColor = SystemColors.ButtonFace;
             btnEdit.Click += (s, e) => EditAppointment();
             
             btnDelete = new Button();
             btnDelete.Text = "Delete";
             btnDelete.Location = new Point(830, 130);
             btnDelete.Size = new Size(100, 30);
-            btnDelete.BackColor = Color.LightPink;
+            btnDelete.BackColor = SystemColors.ButtonFace;
             btnDelete.Click += (s, e) => DeleteAppointment();
             
             // Add controls

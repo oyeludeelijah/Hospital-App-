@@ -32,28 +32,28 @@ public partial class Form1 : Form
         lblTitle.TextAlign = ContentAlignment.MiddleCenter;
         lblTitle.Dock = DockStyle.Top;
         lblTitle.Height = 50;
-        lblTitle.BackColor = Color.LightSteelBlue;
+        lblTitle.BackColor = SystemColors.ControlLight;
         
         // Create navigation buttons
         btnPatients = new Button();
         btnPatients.Text = "Patients";
         btnPatients.Size = new Size(150, 40);
         btnPatients.Location = new Point(20, 80);
-        btnPatients.BackColor = Color.LightBlue;
+        btnPatients.BackColor = SystemColors.Control;
         btnPatients.Font = new Font("Arial", 10, FontStyle.Bold);
         
         btnDoctors = new Button();
         btnDoctors.Text = "Doctors";
         btnDoctors.Size = new Size(150, 40);
         btnDoctors.Location = new Point(190, 80);
-        btnDoctors.BackColor = Color.LightBlue;
+        btnDoctors.BackColor = SystemColors.Control;
         btnDoctors.Font = new Font("Arial", 10, FontStyle.Bold);
         
         btnAppointments = new Button();
         btnAppointments.Text = "Appointments";
         btnAppointments.Size = new Size(150, 40);
         btnAppointments.Location = new Point(360, 80);
-        btnAppointments.BackColor = Color.LightBlue;
+        btnAppointments.BackColor = SystemColors.Control;
         btnAppointments.Font = new Font("Arial", 10, FontStyle.Bold);
         
         // Create content panel
