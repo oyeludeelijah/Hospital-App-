@@ -1,7 +1,9 @@
 using SimpleHospitalApp.Models;
 using SimpleHospitalApp.Services;
+using SimpleHospitalApp.Helpers;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SimpleHospitalApp
@@ -15,6 +17,8 @@ namespace SimpleHospitalApp
         private TextBox txtLastName;
         private Label lblSpecialization;
         private ComboBox cboSpecialization;
+        private Label lblDepartment;
+        private ComboBox cboDepartment;
         private Label lblContactNumber;
         private TextBox txtContactNumber;
         private Label lblEmail;
@@ -28,6 +32,7 @@ namespace SimpleHospitalApp
         {
             _doctor = doctor;
             InitializeComponent();
+            LoadDepartments();
             
             if (_doctor != null)
             {
@@ -91,37 +96,48 @@ namespace SimpleHospitalApp
                 "Orthopedics", "Pediatrics", "Psychiatry", "Radiology", "Urology" 
             });
             
+            // Department
+            lblDepartment = new Label();
+            lblDepartment.Text = "Department:";
+            lblDepartment.Location = new Point(20, 160);
+            lblDepartment.Size = new Size(100, 20);
+            
+            cboDepartment = new ComboBox();
+            cboDepartment.Location = new Point(150, 160);
+            cboDepartment.Size = new Size(300, 20);
+            cboDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
+            
             // Contact Number
             lblContactNumber = new Label();
             lblContactNumber.Text = "Contact Number:";
-            lblContactNumber.Location = new Point(20, 160);
+            lblContactNumber.Location = new Point(20, 190);
             lblContactNumber.Size = new Size(100, 20);
             
             txtContactNumber = new TextBox();
-            txtContactNumber.Location = new Point(150, 160);
+            txtContactNumber.Location = new Point(150, 190);
             txtContactNumber.Size = new Size(300, 20);
             
             // Email
             lblEmail = new Label();
             lblEmail.Text = "Email:";
-            lblEmail.Location = new Point(20, 190);
+            lblEmail.Location = new Point(20, 220);
             lblEmail.Size = new Size(100, 20);
             
             txtEmail = new TextBox();
-            txtEmail.Location = new Point(150, 190);
+            txtEmail.Location = new Point(150, 220);
             txtEmail.Size = new Size(300, 20);
             
             // Buttons
             btnSave = new Button();
             btnSave.Text = "Save";
-            btnSave.Location = new Point(150, 240);
+            btnSave.Location = new Point(150, 270);
             btnSave.Size = new Size(100, 30);
             btnSave.BackColor = Color.LightGreen;
             btnSave.Click += (s, e) => SaveDoctor();
             
             btnCancel = new Button();
             btnCancel.Text = "Cancel";
-            btnCancel.Location = new Point(260, 240);
+            btnCancel.Location = new Point(260, 270);
             btnCancel.Size = new Size(100, 30);
             btnCancel.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
             
@@ -133,6 +149,8 @@ namespace SimpleHospitalApp
             this.Controls.Add(txtLastName);
             this.Controls.Add(lblSpecialization);
             this.Controls.Add(cboSpecialization);
+            this.Controls.Add(lblDepartment);
+            this.Controls.Add(cboDepartment);
             this.Controls.Add(lblContactNumber);
             this.Controls.Add(txtContactNumber);
             this.Controls.Add(lblEmail);
@@ -150,6 +168,52 @@ namespace SimpleHospitalApp
             cboSpecialization.SelectedItem = _doctor.Specialization;
             txtContactNumber.Text = _doctor.ContactNumber;
             txtEmail.Text = _doctor.Email;
+            
+            // Set selected department
+            if (_doctor.DepartmentId.HasValue)
+            {
+                for (int i = 0; i < cboDepartment.Items.Count; i++)
+                {
+                    var item = (ComboBoxItem)cboDepartment.Items[i];
+                    if ((int)item.Value == _doctor.DepartmentId.Value)
+                    {
+                        cboDepartment.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        private void LoadDepartments()
+        {
+            try
+            {
+                // Get departments from DataService
+                var departments = DataService.Instance.GetAllDepartments();
+                
+                // Setup the combo box
+                cboDepartment.DisplayMember = "Text";
+                cboDepartment.ValueMember = "Value";
+                
+                // Add a "None" option first
+                var items = new List<ComboBoxItem> { new ComboBoxItem { Text = "-- Select Department --", Value = 0 } };
+                
+                // Add departments to combo box
+                foreach (var department in departments)
+                {
+                    items.Add(new ComboBoxItem { 
+                        Text = department.Name, 
+                        Value = department.Id 
+                    });
+                }
+                
+                cboDepartment.DataSource = items;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading departments: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         
         private void SaveDoctor()
@@ -175,6 +239,17 @@ namespace SimpleHospitalApp
             _doctor.Specialization = cboSpecialization.SelectedItem?.ToString() ?? "General";
             _doctor.ContactNumber = txtContactNumber.Text.Trim();
             _doctor.Email = txtEmail.Text.Trim();
+            
+            // Set department
+            if (cboDepartment.SelectedItem != null)
+            {
+                var selectedDepartment = (ComboBoxItem)cboDepartment.SelectedItem;
+                _doctor.DepartmentId = (int)selectedDepartment.Value;
+            }
+            else
+            {
+                _doctor.DepartmentId = null;
+            }
             
             // Save to data service
             if (_doctor.Id == 0)

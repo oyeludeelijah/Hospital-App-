@@ -1,3 +1,4 @@
+using SimpleHospitalApp.Controls;
 using SimpleHospitalApp.Models;
 using SimpleHospitalApp.Services;
 using System;
@@ -10,118 +11,63 @@ using System.Windows.Forms;
 
 namespace SimpleHospitalApp
 {
-    public class DoctorManagementControl : UserControl
+    public class DoctorManagementControl : BaseManagementControl
     {
-        private DataGridView dgvDoctors;
-        private Button btnAdd;
-        private Button btnEdit;
-        private Button btnDelete;
-        private Label lblTitle;
-        private TextBox txtSearch;
-        private Button btnSearch;
-        
         public DoctorManagementControl()
         {
-            InitializeComponent();
+            // Set title specific to this control
+            lblTitle.Text = "Doctor Management";
+            btnAdd.Text = "Add Doctor";
+            txtSearch.PlaceholderText = "Search by name or specialization...";
+            
+            // Load initial data
             LoadDoctors();
         }
         
-        private void InitializeComponent()
+        protected override void InitializeBaseComponent()
         {
-            // Setup control
-            this.Size = new Size(940, 400);
+            // Call the base implementation first
+            base.InitializeBaseComponent();
             
-            // Create title label
-            lblTitle = new Label();
-            lblTitle.Text = "Doctor Management";
-            lblTitle.Font = new Font("Arial", 14, FontStyle.Bold);
-            lblTitle.Location = new Point(10, 10);
-            lblTitle.Size = new Size(300, 30);
-            
-            // Create search controls
-            txtSearch = new TextBox();
-            txtSearch.PlaceholderText = "Search by name...";
-            txtSearch.Location = new Point(530, 10);
-            txtSearch.Size = new Size(200, 25);
-            
-            btnSearch = new Button();
-            btnSearch.Text = "Find";
-            btnSearch.Location = new Point(740, 10);
-            btnSearch.Size = new Size(60, 25);
-            btnSearch.Click += (s, e) => SearchDoctors();
-            
-            // Create DataGridView
-            dgvDoctors = new DataGridView();
-            dgvDoctors.Location = new Point(10, 50);
-            dgvDoctors.Size = new Size(810, 280);
-            dgvDoctors.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvDoctors.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDoctors.MultiSelect = false;
-            dgvDoctors.ReadOnly = true;
-            dgvDoctors.AllowUserToAddRows = false;
-            dgvDoctors.AllowUserToDeleteRows = false;
-            dgvDoctors.AllowUserToResizeRows = false;
-            dgvDoctors.RowHeadersVisible = false;
-            dgvDoctors.BackgroundColor = Color.White;
-            
-            // Create buttons
-            btnAdd = new Button();
-            btnAdd.Text = "Add Doctor";
-            btnAdd.Location = new Point(830, 50);
-            btnAdd.Size = new Size(110, 30);
-            btnAdd.BackColor = SystemColors.ButtonFace;
-            btnAdd.Click += (s, e) => AddDoctor();
-            
-            btnEdit = new Button();
-            btnEdit.Text = "Edit";
-            btnEdit.Location = new Point(830, 90);
-            btnEdit.Size = new Size(100, 30);
-            btnEdit.BackColor = SystemColors.ButtonFace;
-            btnEdit.Click += (s, e) => EditDoctor();
-            
-            btnDelete = new Button();
-            btnDelete.Text = "Delete";
-            btnDelete.Location = new Point(830, 130);
-            btnDelete.Size = new Size(100, 30);
-            btnDelete.BackColor = SystemColors.ButtonFace;
-            btnDelete.Click += (s, e) => DeleteDoctor();
-            
-            // Add controls
+            // Add controls to form
             this.Controls.Add(lblTitle);
             this.Controls.Add(txtSearch);
             this.Controls.Add(btnSearch);
-            this.Controls.Add(dgvDoctors);
+            this.Controls.Add(dataGridView);
             this.Controls.Add(btnAdd);
             this.Controls.Add(btnEdit);
             this.Controls.Add(btnDelete);
         }
         
+        // InitializeComponent is now handled by the base class
+        
         private void LoadDoctors()
         {
-            var doctors = DataService.Instance.GetAllDoctors();
-            
-            dgvDoctors.DataSource = null;
-            dgvDoctors.Columns.Clear();
-            
-            var bindingList = new BindingList<DoctorViewModel>(
-                doctors.Select(d => new DoctorViewModel
-                {
-                    Id = d.Id,
-                    FullName = d.FullName,
-                    Specialization = d.Specialization,
-                    ContactNumber = d.ContactNumber,
-                    Email = d.Email
-                }).ToList());
-            
-            dgvDoctors.DataSource = bindingList;
-            
-            if (dgvDoctors.Columns.Count > 0)
+            try
             {
-                dgvDoctors.Columns["Id"].Visible = false;
+                var doctors = DataService.Instance.GetAllDoctors();
+                dataGridView.DataSource = new BindingList<DoctorViewModel>(
+                    doctors.Select(d => new DoctorViewModel
+                    {
+                        Id = d.Id,
+                        FullName = d.FullName,
+                        Specialization = d.Specialization,
+                        ContactNumber = d.ContactNumber,
+                        Email = d.Email
+                    }).ToList());
+                
+                if (dataGridView.Columns.Count > 0)
+                {
+                    dataGridView.Columns["Id"].Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError("loading doctors", ex);
             }
         }
         
-        private void SearchDoctors()
+        protected override void Search()
         {
             string searchTerm = txtSearch.Text.Trim().ToLower();
             var doctors = DataService.Instance.GetAllDoctors();
@@ -134,7 +80,7 @@ namespace SimpleHospitalApp
                     (d.Specialization ?? string.Empty).ToLower().Contains(searchTerm)).ToList();
             }
             
-            dgvDoctors.DataSource = new BindingList<DoctorViewModel>(
+            dataGridView.DataSource = new BindingList<DoctorViewModel>(
                 doctors.Select(d => new DoctorViewModel
                 {
                     Id = d.Id,
@@ -145,30 +91,29 @@ namespace SimpleHospitalApp
                 }).ToList());
         }
         
-        private void AddDoctor()
+        protected override void Add()
         {
-            using (var form = new DoctorForm())
+            using (var doctorForm = new DoctorForm())
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                if (doctorForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadDoctors();
                 }
             }
         }
         
-        private void EditDoctor()
+        protected override void Edit()
         {
-            if (dgvDoctors.SelectedRows.Count > 0)
+            if (dataGridView.SelectedRows.Count > 0)
             {
-                var selectedRow = dgvDoctors.SelectedRows[0];
-                int doctorId = (int)selectedRow.Cells["Id"].Value;
+                int id = (int)dataGridView.SelectedRows[0].Cells["Id"].Value;
+                var doctor = DataService.Instance.GetDoctorById(id);
                 
-                var doctor = DataService.Instance.GetDoctorById(doctorId);
                 if (doctor != null)
                 {
-                    using (var form = new DoctorForm(doctor))
+                    using (var doctorForm = new DoctorForm(doctor))
                     {
-                        if (form.ShowDialog() == DialogResult.OK)
+                        if (doctorForm.ShowDialog() == DialogResult.OK)
                         {
                             LoadDoctors();
                         }
@@ -177,26 +122,41 @@ namespace SimpleHospitalApp
             }
             else
             {
-                MessageBox.Show("Please select a doctor to edit.", "No Selection", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowSelectionRequired("doctor");
             }
         }
         
-        private void DeleteDoctor()
+        protected override void Delete()
         {
-            if (dgvDoctors.SelectedRows.Count > 0)
+            if (dataGridView.SelectedRows.Count > 0)
             {
-                var selectedRow = dgvDoctors.SelectedRows[0];
+                var selectedRow = dataGridView.SelectedRows[0];
                 int doctorId = (int)selectedRow.Cells["Id"].Value;
                 string doctorName = (string)selectedRow.Cells["FullName"].Value;
                 
-                var result = MessageBox.Show($"Are you sure you want to delete doctor '{doctorName}'?", 
-                    "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                // Check if doctor has appointments
+                var doctorAppointments = DataService.Instance.GetAppointmentsByDoctor(doctorId);
+                if (doctorAppointments.Count > 0)
+                {
+                    ShowCannotDelete(doctorName, "doctor", 
+                        $"they have {doctorAppointments.Count} appointments scheduled. " +
+                        $"Please cancel or reassign these appointments first.");
+                    return;
+                }
+                
+                var result = ConfirmDelete(doctorName, "doctor");
                 
                 if (result == DialogResult.Yes)
                 {
-                    DataService.Instance.DeleteDoctor(doctorId);
-                    LoadDoctors();
+                    try
+                    {
+                        DataService.Instance.DeleteDoctor(doctorId);
+                        LoadDoctors();
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError("deleting doctor", ex);
+                    }
                 }
             }
             else
