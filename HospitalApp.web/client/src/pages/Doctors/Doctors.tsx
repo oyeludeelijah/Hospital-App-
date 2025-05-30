@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Table from '@mui/material/Table';
@@ -51,14 +50,18 @@ const Doctors: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchDoctors = () => {
-    // Use local state instead of API calls for now
-    if (doctors.length === 0) {
-      setDoctors([
+    // Check localStorage for saved doctors first
+    const storedDoctors = localStorage.getItem('hospitalAppDoctors');
+    if (storedDoctors) {
+      setDoctors(JSON.parse(storedDoctors));
+    } else if (doctors.length === 0) {
+      // Use default sample data if none exist
+      const defaultDoctors = [
         {
           id: 1,
           firstName: 'John',
           lastName: 'Smith',
-          specialization: 'Dermatology',
+          specialization: 'Cardiology',
           contactNumber: '555-1234',
           email: 'john.smith@hospital.com',
           department: 'Cardiology'
@@ -72,7 +75,9 @@ const Doctors: React.FC = () => {
           email: 'sarah.johnson@hospital.com',
           department: 'Pediatrics'
         }
-      ]);
+      ];
+      setDoctors(defaultDoctors);
+      localStorage.setItem('hospitalAppDoctors', JSON.stringify(defaultDoctors));
     }
   };
 
@@ -115,7 +120,41 @@ const Doctors: React.FC = () => {
   useEffect(() => {
     fetchDoctors();
     fetchDepartments();
-  }, []);
+    
+    // This function synchronizes department doctor counts with actual doctors
+    const syncDepartmentCounts = () => {
+      const storedDoctors = localStorage.getItem('hospitalAppDoctors');
+      const storedDepartments = localStorage.getItem('hospitalAppDepartments');
+      
+      if (storedDoctors && storedDepartments) {
+        const doctorsData = JSON.parse(storedDoctors);
+        let departmentsData = JSON.parse(storedDepartments);
+        
+        // Reset all department counts to zero
+        departmentsData = departmentsData.map((dept: Department) => ({
+          ...dept,
+          doctorCount: 0
+        }));
+        
+        // Count doctors for each department
+        doctorsData.forEach((doctor: Doctor) => {
+          if (doctor.department) {
+            const departmentIndex = departmentsData.findIndex((d: Department) => d.name === doctor.department);
+            if (departmentIndex !== -1) {
+              departmentsData[departmentIndex].doctorCount++;
+            }
+          }
+        });
+        
+        // Update departments in localStorage and state
+        localStorage.setItem('hospitalAppDepartments', JSON.stringify(departmentsData));
+        setDepartments(departmentsData);
+      }
+    };
+    
+    // Run the sync on component mount
+    syncDepartmentCounts();
+  }, [fetchDoctors, fetchDepartments]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -136,8 +175,10 @@ const Doctors: React.FC = () => {
       id: doctors.length > 0 ? Math.max(...doctors.map(d => d.id)) + 1 : 1
     };
     
-    // Add the doctor to local state
-    setDoctors([...doctors, newDoctor]);
+    // Add the doctor to local state and localStorage
+    const updatedDoctors = [...doctors, newDoctor];
+    setDoctors(updatedDoctors);
+    localStorage.setItem('hospitalAppDoctors', JSON.stringify(updatedDoctors));
     
     // Update the department's doctor count
     if (doctor.department) {
@@ -210,9 +251,10 @@ const Doctors: React.FC = () => {
       }
     }
     
-    // Update the doctor in local state
+    // Update the doctor in local state and localStorage
     const updatedDoctors = doctors.map(d => d.id === doctor.id ? doctor : d);
     setDoctors(updatedDoctors);
+    localStorage.setItem('hospitalAppDoctors', JSON.stringify(updatedDoctors));
     
     // Close dialog and reset form
     setOpenEditDialog(false);
@@ -241,9 +283,10 @@ const Doctors: React.FC = () => {
       }
     }
     
-    // Remove the doctor from local state
+    // Remove the doctor from local state and localStorage
     const updatedDoctors = doctors.filter(d => d.id !== doctor.id);
     setDoctors(updatedDoctors);
+    localStorage.setItem('hospitalAppDoctors', JSON.stringify(updatedDoctors));
     
     // Close dialog and reset form
     setOpenDeleteDialog(false);

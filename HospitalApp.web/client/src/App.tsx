@@ -29,43 +29,96 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     auth.logout();
   };
 
+  // Get current path to highlight active navigation item
+  const pathname = window.location.pathname;
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Hospital Management System</h1>
-        <nav style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '10px' }}>
-          <a href="/" style={{ color: 'white', textDecoration: 'none' }}>Home</a>
-          {auth.isAuthenticated ? (
-            <>
-              <a href="/patients" style={{ color: 'white', textDecoration: 'none' }}>Patients</a>
-              <a href="/doctors" style={{ color: 'white', textDecoration: 'none' }}>Doctors</a>
-              <a href="/appointments" style={{ color: 'white', textDecoration: 'none' }}>Appointments</a>
-              <a href="/billing" style={{ color: 'white', textDecoration: 'none' }}>Billing</a>
-              <a href="/departments" style={{ color: 'white', textDecoration: 'none' }}>Departments</a>
-              <button 
-                onClick={handleLogout}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontSize: '16px'
-                }}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <a href="/login" style={{ color: 'white', textDecoration: 'none' }}>Login</a>
-              <a href="/register" style={{ color: 'white', textDecoration: 'none' }}>Register</a>
-            </>
-          )}
-        </nav>
+        <div className="nav-container">
+          <div className="nav-links">
+            <a 
+              href="/" 
+              className={`nav-link ${pathname === '/' ? 'active' : ''}`}
+            >
+              Home
+            </a>
+            {auth.isAuthenticated ? (
+              <>
+                <a 
+                  href="/patients" 
+                  className={`nav-link ${pathname === '/patients' ? 'active' : ''}`}
+                >
+                  Patients
+                </a>
+                <a 
+                  href="/doctors" 
+                  className={`nav-link ${pathname === '/doctors' ? 'active' : ''}`}
+                >
+                  Doctors
+                </a>
+                <a 
+                  href="/appointments" 
+                  className={`nav-link ${pathname === '/appointments' ? 'active' : ''}`}
+                >
+                  Appointments
+                </a>
+                <a 
+                  href="/billing" 
+                  className={`nav-link ${pathname === '/billing' ? 'active' : ''}`}
+                >
+                  Billing
+                </a>
+                <a 
+                  href="/departments" 
+                  className={`nav-link ${pathname === '/departments' ? 'active' : ''}`}
+                >
+                  Departments
+                </a>
+                <button 
+                  onClick={handleLogout}
+                  className="logout-btn"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <a 
+                  href="/login" 
+                  className={`nav-link ${pathname === '/login' ? 'active' : ''}`}
+                >
+                  Login
+                </a>
+                <a 
+                  href="/register" 
+                  className={`nav-link ${pathname === '/register' ? 'active' : ''}`}
+                >
+                  Register
+                </a>
+              </>
+            )}
+          </div>
+        </div>
       </header>
       <main>
         {children}
       </main>
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h4>Contact</h4>
+            <p>support@hospitalapp.com</p>
+          </div>
+          <div className="footer-section">
+            <p>&copy; 2025 Hospital Management System</p>
+          </div>
+          <div className="footer-section">
+            <p>Version 1.0.2</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
@@ -80,18 +133,46 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={
             <AppLayout>
-              <div style={{ padding: '20px' }}>
-                <h2>Welcome to the Hospital Management System</h2>
-                <p>This system helps manage hospital operations efficiently.</p>
-                <p>The system includes:</p>
-                <ul style={{ textAlign: 'left', maxWidth: '500px', margin: '0 auto' }}>
-                  <li>Patient Management</li>
-                  <li>Doctor Management</li>
-                  <li>Appointment Scheduling</li>
-                  <li>Medical Records</li>
-                  <li>Billing System</li>
-                </ul>
-
+              <div className="welcome-section">
+                <h1 className="welcome-heading">Welcome to the Hospital Management System</h1>
+                <p className="welcome-text">This system helps manage hospital operations efficiently.</p>
+                <div className="divider"></div>
+                
+                <h2>System Features</h2>
+                <table className="features-table">
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="feature-name">Patient Management</td>
+                      <td className="feature-description">Register patients, maintain medical histories, and track patient admissions and discharges</td>
+                    </tr>
+                    <tr>
+                      <td className="feature-name">Doctor Management</td>
+                      <td className="feature-description">Organize doctor profiles, specialties, and department assignments</td>
+                    </tr>
+                    <tr>
+                      <td className="feature-name">Department Management</td>
+                      <td className="feature-description">Create and manage hospital departments, track associated doctors and resource allocation</td>
+                    </tr>
+                    <tr>
+                      <td className="feature-name">Appointment Scheduling</td>
+                      <td className="feature-description">Book, reschedule, and manage patient appointments with calendar integration</td>
+                    </tr>
+                    <tr>
+                      <td className="feature-name">Medical Records</td>
+                      <td className="feature-description">Access and update digital health records, prescriptions, and test results</td>
+                    </tr>
+                    <tr>
+                      <td className="feature-name">Billing System</td>
+                      <td className="feature-description">Generate invoices, process payments, and manage insurance claims</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </AppLayout>
           } />
