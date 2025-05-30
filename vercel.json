@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "buildCommand": "cd HospitalApp.Web/client && npm install && npm run build",
+  "outputDirectory": "HospitalApp.Web/client/build",
+  "framework": "create-react-app"
+}

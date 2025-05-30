@@ -2,9 +2,13 @@ import React from 'react';
 import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import ApiTest from './components/ApiTest';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
+import Patients from './pages/Patients/Patients';
+import Doctors from './pages/Doctors/Doctors';
+import Appointments from './pages/Appointments/Appointments';
+import Billing from './pages/Billing/Billing';
+import Departments from './pages/Departments/Departments';
 import { useAuth } from './contexts/AuthContext';
 
 // Protected route component
@@ -36,6 +40,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <a href="/patients" style={{ color: 'white', textDecoration: 'none' }}>Patients</a>
               <a href="/doctors" style={{ color: 'white', textDecoration: 'none' }}>Doctors</a>
               <a href="/appointments" style={{ color: 'white', textDecoration: 'none' }}>Appointments</a>
+              <a href="/billing" style={{ color: 'white', textDecoration: 'none' }}>Billing</a>
+              <a href="/departments" style={{ color: 'white', textDecoration: 'none' }}>Departments</a>
               <button 
                 onClick={handleLogout}
                 style={{
@@ -85,39 +91,42 @@ function App() {
                   <li>Medical Records</li>
                   <li>Billing System</li>
                 </ul>
-                <div className="api-test-section" style={{ marginTop: '30px' }}>
-                  <ApiTest />
-                </div>
+
               </div>
             </AppLayout>
           } />
           <Route path="/patients" element={
             <ProtectedRoute>
               <AppLayout>
-                <div style={{ padding: '20px' }}>
-                  <h2>Patient Management</h2>
-                  <p>Coming soon...</p>
-                </div>
+                <Patients />
               </AppLayout>
             </ProtectedRoute>
           } />
           <Route path="/doctors" element={
             <ProtectedRoute>
               <AppLayout>
-                <div style={{ padding: '20px' }}>
-                  <h2>Doctor Management</h2>
-                  <p>Coming soon...</p>
-                </div>
+                <Doctors />
               </AppLayout>
             </ProtectedRoute>
           } />
           <Route path="/appointments" element={
             <ProtectedRoute>
               <AppLayout>
-                <div style={{ padding: '20px' }}>
-                  <h2>Appointment Scheduling</h2>
-                  <p>Coming soon...</p>
-                </div>
+                <Appointments />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/billing" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Billing />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/departments" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Departments />
               </AppLayout>
             </ProtectedRoute>
           } />

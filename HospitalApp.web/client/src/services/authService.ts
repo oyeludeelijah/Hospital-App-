@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-// Create a configured axios instance
+// Create a configured axios instance with explicitly verified backend URL
+const API_BASE_URL = 'http://localhost:5005';
+console.log('Using API base URL:', API_BASE_URL);
+
 const api = axios.create({
-  baseURL: 'http://localhost:5005/api',
-  timeout: 10000,
+  baseURL: `${API_BASE_URL}/api`,
+  timeout: 15000, // Increased timeout for slower connections
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'

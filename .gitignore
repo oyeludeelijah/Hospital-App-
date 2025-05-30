@@ -1,0 +1,7 @@
+# React
+HospitalApp.Web/client/node_modules/
+HospitalApp.Web/client/.env
+
+# .NET
+HospitalApp.Web/HospitalApi/bin/
+HospitalApp.Web/HospitalApi/obj/
