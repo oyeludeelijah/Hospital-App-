@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HospitalApp.Web.HospitalApi.Models;
+using HospitalApp.Web.HospitalApi.Data;
 
 namespace HospitalApp.Web.HospitalApi.Controllers
 {
@@ -9,48 +12,93 @@ namespace HospitalApp.Web.HospitalApi.Controllers
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
     {
-        // Sample data for testing
-        private static readonly List<Patient> _patients = new List<Patient>
-        {
-            new Patient 
-            { 
-                Id = 1, 
-                FirstName = "John", 
-                LastName = "Doe", 
-                DateOfBirth = new System.DateTime(1980, 1, 1),
-                Gender = "Male",
-                ContactNumber = "555-1234",
-                Email = "john.doe@example.com",
-                Address = "123 Main St"
-            },
-            new Patient 
-            { 
-                Id = 2, 
-                FirstName = "Jane", 
-                LastName = "Smith", 
-                DateOfBirth = new System.DateTime(1985, 5, 15),
-                Gender = "Female",
-                ContactNumber = "555-5678",
-                Email = "jane.smith@example.com",
-                Address = "456 Oak Ave"
-            }
-        };
+        private readonly ApplicationDbContext _context;
 
-        [HttpGet]
-        public IActionResult GetAll()
+        public PatientsController(ApplicationDbContext context)
         {
-            return Ok(_patients);
+            _context = context;
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        // GET: api/Patients
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Patient>>> GetAll()
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
+            return await _context.Patients.ToListAsync();
+        }
+
+        // GET: api/Patients/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Patient>> GetById(int id)
+        {
+            var patient = await _context.Patients.FindAsync(id);
+
             if (patient == null)
             {
                 return NotFound();
             }
-            return Ok(patient);
+
+            return patient;
+        }
+
+        // POST: api/Patients
+        [HttpPost]
+        public async Task<ActionResult<Patient>> Create(Patient patient)
+        {
+            _context.Patients.Add(patient);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new { id = patient.Id }, patient);
+        }
+
+        // PUT: api/Patients/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, Patient patient)
+        {
+            if (id != patient.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(patient).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PatientExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/Patients/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var patient = await _context.Patients.FindAsync(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            _context.Patients.Remove(patient);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool PatientExists(int id)
+        {
+            return _context.Patients.Any(e => e.Id == id);
         }
     }
 }
