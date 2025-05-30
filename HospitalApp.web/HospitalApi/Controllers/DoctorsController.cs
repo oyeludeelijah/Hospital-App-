@@ -27,9 +27,10 @@ namespace HospitalApp.Web.HospitalApi.Controllers
                 Id = 1,
                 FirstName = "John",
                 LastName = "Smith",
-                Specialization = "Cardiology",
+                Specialization = "Dermatology",
                 ContactNumber = "555-1234",
-                Email = "john.smith@hospital.com"
+                Email = "john.smith@hospital.com",
+                Department = "Cardiology"
             },
             new SimpleDoctor
             {
@@ -38,7 +39,8 @@ namespace HospitalApp.Web.HospitalApi.Controllers
                 LastName = "Johnson",
                 Specialization = "Pediatrics",
                 ContactNumber = "555-5678",
-                Email = "sarah.johnson@hospital.com"
+                Email = "sarah.johnson@hospital.com",
+                Department = "Pediatrics"
             }
         };
 
@@ -91,6 +93,7 @@ namespace HospitalApp.Web.HospitalApi.Controllers
             existingDoctor.Specialization = doctor.Specialization;
             existingDoctor.ContactNumber = doctor.ContactNumber;
             existingDoctor.Email = doctor.Email;
+            existingDoctor.Department = doctor.Department;
 
             return NoContent();
         }
