@@ -67,7 +67,7 @@ export const register = async (userData: RegisterRequest): Promise<AuthResponse>
     console.log('Sending registration data:', userData);
     
     // Use our configured axios instance
-    const response = await api.post(`${API_URL}/register`, userData);
+    const response = await api.post(`${API_URL}/register`, { userDto: userData });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -94,7 +94,7 @@ export const login = async (userData: LoginRequest): Promise<AuthResponse> => {
     console.log('Sending login data:', userData);
     
     // Use our configured axios instance
-    const response = await api.post(`${API_URL}/login`, userData);
+    const response = await api.post(`${API_URL}/login`, { userDto: userData });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
