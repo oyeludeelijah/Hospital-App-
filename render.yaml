@@ -3,18 +3,9 @@ services:
     name: hospital-api
     env: docker
     repo: https://github.com/oyeludeelijah/Hospital-App-.git
-    region: oregon
-    plan: free
     branch: master
     rootDir: HospitalApp.web/HospitalApi
-    dockerfilePath: Dockerfile
-    healthCheckPath: /api/hello
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-      - key: ConnectionStrings__DefaultConnection
-        value: Data Source=/app/hospital.db
-      - key: ASPNETCORE_URLS
-        value: http://+:10000
-    port: 10000
-    autoDeploy: true 
+        value: Production 
