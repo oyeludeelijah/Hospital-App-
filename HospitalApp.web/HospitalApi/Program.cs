@@ -15,10 +15,9 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://hospital-app-client.vercel.app")
+        policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+              .AllowAnyHeader();
     });
 });
 
@@ -51,13 +50,7 @@ app.MapGet("/api/hello", () => new { message = "API is working!", timestamp = Da
 
 // Configure middleware
 app.UseHttpsRedirection();
-
-// Apply CORS - must be before auth and routing
-app.UseCors();
-
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
 
 // Debug middleware to log requests
 app.Use(async (context, next) =>
@@ -66,6 +59,13 @@ app.Use(async (context, next) =>
     await next();
     Console.WriteLine($"Response status: {context.Response.StatusCode}");
 });
+
+// Apply CORS - completely permissive for development
+app.UseCors();
+
+// Add Authentication middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Create a configured axios instance with explicitly verified backend URL
-const API_BASE_URL = 'https://hospital-api-gbri.onrender.com';
+const API_BASE_URL = 'http://localhost:5005';
 console.log('Using API base URL:', API_BASE_URL);
 
 const api = axios.create({
@@ -67,7 +67,7 @@ export const register = async (userData: RegisterRequest): Promise<AuthResponse>
     console.log('Sending registration data:', userData);
     
     // Use our configured axios instance
-    const response = await api.post(`${API_URL}/register`, { userDto: userData });
+    const response = await api.post(`${API_URL}/register`, userData);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -94,7 +94,7 @@ export const login = async (userData: LoginRequest): Promise<AuthResponse> => {
     console.log('Sending login data:', userData);
     
     // Use our configured axios instance
-    const response = await api.post(`${API_URL}/login`, { userDto: userData });
+    const response = await api.post(`${API_URL}/login`, userData);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

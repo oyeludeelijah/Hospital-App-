@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://hospital-api-gbri.onrender.com/api",
+  baseURL: "http://localhost:5005/api",
   headers: { "Content-Type": "application/json" }
 });

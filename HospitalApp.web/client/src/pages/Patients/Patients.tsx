@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Table from '@mui/material/Table';
@@ -13,7 +14,17 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { format } from 'date-fns';
-import { Patient, getPatients, addPatient, updatePatient, deletePatient } from '../../services/patientService';
+
+interface Patient {
+  id: number;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  contactNumber: string;
+  email: string;
+  address: string;
+}
 
 const emptyPatient: Patient = {
   id: 0,
@@ -33,15 +44,12 @@ const Patients: React.FC = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState<string>('');
 
   const fetchPatients = async () => {
     try {
-      const data = await getPatients();
-      setPatients(data);
-      setError('');
+      const response = await axios.get('http://localhost:5005/api/patients');
+      setPatients(response.data);
     } catch (error) {
-      setError('Error fetching patients. Please try again.');
       console.error('Error fetching patients:', error);
     }
   };
@@ -57,40 +65,33 @@ const Patients: React.FC = () => {
 
   const handleAdd = async () => {
     try {
-      const { id, ...patientData } = patient;
-      await addPatient(patientData);
-      await fetchPatients();
+      await axios.post('http://localhost:5005/api/patients', patient);
+      fetchPatients();
       setOpenAddDialog(false);
       setPatient(emptyPatient);
-      setError('');
     } catch (error) {
-      setError('Error adding patient. Please try again.');
       console.error('Error adding patient:', error);
     }
   };
 
   const handleEdit = async () => {
     try {
-      await updatePatient(patient.id, patient);
-      await fetchPatients();
+      await axios.put(`http://localhost:5005/api/patients/${patient.id}`, patient);
+      fetchPatients();
       setOpenEditDialog(false);
       setPatient(emptyPatient);
-      setError('');
     } catch (error) {
-      setError('Error updating patient. Please try again.');
       console.error('Error updating patient:', error);
     }
   };
 
   const handleDelete = async () => {
     try {
-      await deletePatient(patient.id);
-      await fetchPatients();
+      await axios.delete(`http://localhost:5005/api/patients/${patient.id}`);
+      fetchPatients();
       setOpenDeleteDialog(false);
       setPatient(emptyPatient);
-      setError('');
     } catch (error) {
-      setError('Error deleting patient. Please try again.');
       console.error('Error deleting patient:', error);
     }
   };
@@ -118,18 +119,6 @@ const Patients: React.FC = () => {
     <div style={{ padding: '20px' }}>
       <h1>Patient Management</h1>
       
-      {error && (
-        <div style={{ 
-          color: 'red', 
-          backgroundColor: '#ffebee', 
-          padding: '10px', 
-          borderRadius: '4px',
-          marginBottom: '20px' 
-        }}>
-          {error}
-        </div>
-      )}
-
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
         <div style={{ flexGrow: 1 }}>
           <TextField 
