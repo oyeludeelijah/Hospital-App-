@@ -7,7 +7,7 @@ services:
     plan: free
     branch: master
     rootDir: HospitalApp.web/HospitalApi
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: Dockerfile
     healthCheckPath: /api/hello
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
