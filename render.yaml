@@ -6,8 +6,8 @@ services:
     region: oregon
     plan: free
     branch: main
-    buildCommand: cd HospitalApp.web/HospitalApi && docker build -t hospital-api .
-    startCommand: cd HospitalApp.web/HospitalApi && docker run -p 8080:80 hospital-api
+    rootDir: HospitalApp.web/HospitalApi
+    dockerfilePath: Dockerfile
     healthCheckPath: /api/hello
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
