@@ -15,7 +15,10 @@ WORKDIR /app
 COPY --from=build /app .
 COPY hospital.db .
 
-EXPOSE 80
-EXPOSE 443
+# Ensure the SQLite database has proper permissions
+RUN chmod 644 hospital.db
+
+ENV ASPNETCORE_URLS=http://+:10000
+EXPOSE 10000
 
 ENTRYPOINT ["dotnet", "HospitalApi.dll"]

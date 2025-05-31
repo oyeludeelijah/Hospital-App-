@@ -7,11 +7,14 @@ services:
     plan: free
     branch: master
     rootDir: HospitalApp.web/HospitalApi
-    dockerfilePath: Dockerfile
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /api/hello
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: ConnectionStrings__DefaultConnection
-        value: Data Source=hospital.db
+        value: Data Source=/app/hospital.db
+      - key: ASPNETCORE_URLS
+        value: http://+:10000
+    port: 10000
     autoDeploy: true 
