@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Create a configured axios instance with explicitly verified backend URL
-const API_BASE_URL = 'http://localhost:5005';
+const API_BASE_URL = 'https://hospital-api-gbri.onrender.com';
 console.log('Using API base URL:', API_BASE_URL);
 
 const api = axios.create({

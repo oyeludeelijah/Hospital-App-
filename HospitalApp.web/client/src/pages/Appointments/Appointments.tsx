@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { format } from 'date-fns';
+import { api } from '../../services/api';
 
 interface Appointment {
   id: number;
@@ -45,7 +46,7 @@ const Appointments: React.FC = () => {
 
   const fetchAppointments = async () => {
     try {
-      const response = await axios.get('http://localhost:5005/api/appointments');
+      const response = await api.get('/appointments');
       setAppointments(response.data);
     } catch (error) {
       console.error('Error fetching appointments:', error);
@@ -54,7 +55,7 @@ const Appointments: React.FC = () => {
 
   const fetchPatients = async () => {
     try {
-      const response = await axios.get('http://localhost:5005/api/patients');
+      const response = await api.get('/patients');
       setPatients(response.data);
     } catch (error) {
       console.error('Error fetching patients:', error);
@@ -63,7 +64,7 @@ const Appointments: React.FC = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('http://localhost:5005/api/doctors');
+      const response = await api.get('/doctors');
       setDoctors(response.data);
     } catch (error) {
       console.error('Error fetching doctors:', error);
@@ -83,7 +84,7 @@ const Appointments: React.FC = () => {
 
   const handleAdd = async () => {
     try {
-      await axios.post('http://localhost:5005/api/appointments', appointment);
+      await api.post('/appointments', appointment);
       fetchAppointments();
       setOpenAddDialog(false);
       setAppointment(emptyAppointment);
@@ -94,7 +95,7 @@ const Appointments: React.FC = () => {
 
   const handleEdit = async () => {
     try {
-      await axios.put(`http://localhost:5005/api/appointments/${appointment.id}`, appointment);
+      await api.put(`/appointments/${appointment.id}`, appointment);
       fetchAppointments();
       setOpenEditDialog(false);
       setAppointment(emptyAppointment);
@@ -105,7 +106,7 @@ const Appointments: React.FC = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5005/api/appointments/${appointment.id}`);
+      await api.delete(`/appointments/${appointment.id}`);
       fetchAppointments();
       setOpenDeleteDialog(false);
       setAppointment(emptyAppointment);
