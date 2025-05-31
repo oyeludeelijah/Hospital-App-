@@ -10,7 +10,6 @@ import Appointments from './pages/Appointments/Appointments';
 import Billing from './pages/Billing/Billing';
 import Departments from './pages/Departments/Departments';
 import { useAuth } from './contexts/AuthContext';
-import ApiStatus from './utils/ApiStatus';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -129,7 +128,6 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <ApiStatus />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
