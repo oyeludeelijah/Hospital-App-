@@ -5,7 +5,7 @@ services:
     repo: https://github.com/oyeludeelijah/Hospital-App-.git
     region: oregon
     plan: free
-    branch: main
+    branch: master
     rootDir: HospitalApp.web/HospitalApi
     dockerfilePath: Dockerfile
     healthCheckPath: /api/hello
