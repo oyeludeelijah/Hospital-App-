@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hospital-api
+    env: docker
+    repo: https://github.com/oy/YOUR_REPO_NAME.git
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: HospitalApp.web/HospitalApi
+    healthCheckPath: /api/hello
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        value: Data Source=hospital.db
