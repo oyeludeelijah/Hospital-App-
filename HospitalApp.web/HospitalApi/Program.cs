@@ -11,13 +11,11 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add this helper function at the top of the file, after the using statements
 static string ConvertPostgresUrlToConnectionString(string? databaseUrl)
 {
     if (string.IsNullOrEmpty(databaseUrl))
         throw new ArgumentNullException(nameof(databaseUrl), "DATABASE_URL environment variable is not set");
 
-    // Check if it's already in the correct format
     if (databaseUrl.StartsWith("Server=") || databaseUrl.StartsWith("Host="))
         return databaseUrl;
 
@@ -37,10 +35,8 @@ static string ConvertPostgresUrlToConnectionString(string? databaseUrl)
     }
 }
 
-// Add services to the container
 builder.Services.AddControllers();
 
-// Configure environment-specific CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -61,7 +57,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Modify the database context configuration
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("DefaultConnection")
@@ -87,14 +82,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
 });
 
-// Register Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// Add Health Checks
 builder.Services.AddHealthChecks()
     .AddCheck("basic", () => HealthCheckResult.Healthy("Application is running"));
 
-// Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
         options.TokenValidationParameters = new TokenValidationParameters {
@@ -113,18 +105,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Configure error handling for production
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/error");
     app.UseHsts();
 }
 
-// Configure middleware
 app.UseHttpsRedirection();
 app.UseRouting();
 
-// Health check endpoint
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = async (context, report) =>
@@ -145,16 +134,11 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     }
 });
 
-// Apply CORS
 app.UseCors();
-
-// Add Authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
-// Ensure database is ready (with retry for production)
 if (!app.Environment.IsDevelopment())
 {
     using (var scope = app.Services.CreateScope())
@@ -178,10 +162,10 @@ if (!app.Environment.IsDevelopment())
                 logger.LogError(ex, $"Migration attempt {retryCount + 1} failed");
                 retryCount++;
                 if (retryCount == maxRetries) throw;
-                await Task.Delay(2000 * retryCount); // Exponential backoff
+                await Task.Delay(2000 * retryCount);
             }
         }
     }
 }
 
-app.Run();
+app.Run(); 
