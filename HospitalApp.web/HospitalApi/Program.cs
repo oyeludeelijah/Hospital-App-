@@ -8,6 +8,7 @@ using HospitalApp.Web.HospitalApi.Services;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,14 +25,36 @@ static string ConvertPostgresUrlToConnectionString(string? databaseUrl)
         var uri = new Uri(databaseUrl);
         var userInfo = uri.UserInfo.Split(':');
         var host = uri.Host;
-        var port = uri.Port;
+        var port = uri.Port > 0 ? uri.Port : 5432; // Default to 5432 if port is not specified
         var database = uri.AbsolutePath.TrimStart('/');
 
-        return $"Host={host};Port={port};Database={database};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+        if (string.IsNullOrEmpty(host))
+            throw new ArgumentException("Host is missing from the database URL");
+        if (userInfo.Length != 2)
+            throw new ArgumentException("Username and password are required in the database URL");
+        if (string.IsNullOrEmpty(database))
+            throw new ArgumentException("Database name is missing from the database URL");
+
+        var builder = new NpgsqlConnectionStringBuilder
+        {
+            Host = host,
+            Port = port,
+            Database = database,
+            Username = userInfo[0],
+            Password = userInfo[1],
+            SslMode = SslMode.Require,
+            TrustServerCertificate = true,
+            Pooling = true,
+            MinPoolSize = 0,
+            MaxPoolSize = 100,
+            ConnectionIdleLifetime = 300
+        };
+
+        return builder.ToString();
     }
     catch (Exception ex)
     {
-        throw new ArgumentException($"Invalid database URL format: {ex.Message}");
+        throw new ArgumentException($"Invalid database URL format: {ex.Message}", ex);
     }
 }
 
