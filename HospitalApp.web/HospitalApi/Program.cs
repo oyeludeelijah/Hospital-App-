@@ -10,6 +10,32 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add this helper function at the top of the file, after the using statements
+static string ConvertPostgresUrlToConnectionString(string databaseUrl)
+{
+    if (string.IsNullOrEmpty(databaseUrl))
+        throw new ArgumentNullException(nameof(databaseUrl));
+
+    // Check if it's already in the correct format
+    if (databaseUrl.StartsWith("Server=") || databaseUrl.StartsWith("Host="))
+        return databaseUrl;
+
+    try
+    {
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        var host = uri.Host;
+        var port = uri.Port;
+        var database = uri.AbsolutePath.TrimStart('/');
+
+        return $"Host={host};Port={port};Database={database};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    }
+    catch (Exception ex)
+    {
+        throw new ArgumentException($"Invalid database URL format: {ex.Message}");
+    }
+}
+
 // Add services to the container
 builder.Services.AddControllers();
 
@@ -34,10 +60,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add Database Context with environment-specific configuration
+// Modify the database context configuration
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("DefaultConnection")
-    : Environment.GetEnvironmentVariable("DATABASE_URL");
+    : ConvertPostgresUrlToConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
