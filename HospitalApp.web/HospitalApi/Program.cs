@@ -88,6 +88,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             npgsqlOptions.EnableRetryOnFailure(5);
             npgsqlOptions.CommandTimeout(30);
         });
+        // Suppress the pending changes warning in production
+        options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
 });
 
