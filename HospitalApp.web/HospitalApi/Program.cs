@@ -195,8 +195,9 @@ if (!app.Environment.IsDevelopment())
             {
                 logger.LogInformation("Attempting database migration...");
                 
-                // Ensure database exists
-                await db.Database.EnsureCreatedAsync();
+                // Ensure database exists - REMOVED FOR PRODUCTION MIGRATION FLOW
+                // await db.Database.EnsureCreatedAsync(); 
+                // Only rely on MigrateAsync for schema changes in production
 
                 // Apply migrations
                 await db.Database.MigrateAsync();
