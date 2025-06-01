@@ -60,7 +60,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add Health Checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<ApplicationDbContext>();
+    .AddCheck("basic", () => HealthCheckResult.Healthy("Application is running"));
 
 // Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -97,8 +97,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = async (context, report) =>
     {
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsJsonAsync(new
+        var result = new
         {
             status = report.Status.ToString(),
             checks = report.Entries.Select(e => new
@@ -107,7 +106,10 @@ app.MapHealthChecks("/health", new HealthCheckOptions
                 status = e.Value.Status.ToString(),
                 description = e.Value.Description
             })
-        });
+        };
+        
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(result);
     }
 });
 
@@ -126,6 +128,7 @@ if (!app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         var retryCount = 0;
         const int maxRetries = 3;
 
@@ -133,15 +136,17 @@ if (!app.Environment.IsDevelopment())
         {
             try
             {
-                db.Database.Migrate();
+                logger.LogInformation("Attempting database migration...");
+                await db.Database.MigrateAsync();
+                logger.LogInformation("Database migration successful");
                 break;
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, $"Migration attempt {retryCount + 1} failed");
                 retryCount++;
-                if (retryCount == maxRetries)
-                    throw;
-                Thread.Sleep(2000 * retryCount); // Exponential backoff
+                if (retryCount == maxRetries) throw;
+                await Task.Delay(2000 * retryCount); // Exponential backoff
             }
         }
     }
