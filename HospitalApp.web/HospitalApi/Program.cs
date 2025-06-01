@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using HospitalApp.Web.HospitalApi.Data;
 using HospitalApp.Web.HospitalApi.Services;
@@ -11,10 +12,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add this helper function at the top of the file, after the using statements
-static string ConvertPostgresUrlToConnectionString(string databaseUrl)
+static string ConvertPostgresUrlToConnectionString(string? databaseUrl)
 {
     if (string.IsNullOrEmpty(databaseUrl))
-        throw new ArgumentNullException(nameof(databaseUrl));
+        throw new ArgumentNullException(nameof(databaseUrl), "DATABASE_URL environment variable is not set");
 
     // Check if it's already in the correct format
     if (databaseUrl.StartsWith("Server=") || databaseUrl.StartsWith("Host="))
@@ -25,23 +26,14 @@ static string ConvertPostgresUrlToConnectionString(string databaseUrl)
         var uri = new Uri(databaseUrl);
         var userInfo = uri.UserInfo.Split(':');
         var host = uri.Host;
-        var port = uri.Port > 0 ? uri.Port : 5432; // Use default PostgreSQL port if not specified
+        var port = uri.Port;
         var database = uri.AbsolutePath.TrimStart('/');
 
-        var builder = new StringBuilder();
-        builder.Append($"Host={host};");
-        builder.Append($"Port={port};");
-        builder.Append($"Database={database};");
-        builder.Append($"Username={userInfo[0]};");
-        builder.Append($"Password={userInfo[1]};");
-        builder.Append("SSL Mode=Require;");
-        builder.Append("Trust Server Certificate=true");
-
-        return builder.ToString();
+        return $"Host={host};Port={port};Database={database};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
     }
     catch (Exception ex)
     {
-        throw new ArgumentException($"Invalid database URL format: {ex.Message}", ex);
+        throw new ArgumentException($"Invalid database URL format: {ex.Message}");
     }
 }
 
@@ -70,9 +62,10 @@ builder.Services.AddCors(options =>
 });
 
 // Modify the database context configuration
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration.GetConnectionString("DefaultConnection")
-    : ConvertPostgresUrlToConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"));
+    : ConvertPostgresUrlToConnectionString(databaseUrl);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -88,8 +81,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             npgsqlOptions.EnableRetryOnFailure(5);
             npgsqlOptions.CommandTimeout(30);
         });
-        // Suppress the pending changes warning in production
-        options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        options.ConfigureWarnings(warnings => warnings.Log(
+            CoreEventId.SensitiveDataLoggingEnabled
+        ));
     }
 });
 
