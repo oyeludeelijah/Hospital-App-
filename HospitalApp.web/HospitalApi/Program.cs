@@ -193,15 +193,15 @@ if (!app.Environment.IsDevelopment())
         {
             try
             {
-                logger.LogInformation("Attempting database migration... SKIPPING FOR DEBUGGING");
+                logger.LogInformation("Attempting database migration...");
                 
                 // Ensure database exists - REMOVED FOR PRODUCTION MIGRATION FLOW
                 // await db.Database.EnsureCreatedAsync(); 
                 // Only rely on MigrateAsync for schema changes in production
 
                 // Apply migrations
-                // await db.Database.MigrateAsync(); 
-                logger.LogInformation("Database migration SKIPPED FOR DEBUGGING");
+                await db.Database.MigrateAsync(); 
+                logger.LogInformation("Database migration successful");
                 break;
             }
             catch (Exception ex)
