@@ -6,6 +6,7 @@ using HospitalApp.Web.HospitalApi.Data;
 using HospitalApp.Web.HospitalApi.Services;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
