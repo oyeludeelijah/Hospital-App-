@@ -1,0 +1,24 @@
+# Development stage only
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+WORKDIR /src
+
+# Install dev tools and curl for healthcheck
+RUN apt-get update && apt-get install -y curl
+
+# Copy project file
+COPY ["HospitalApi.csproj", "./"]
+RUN dotnet restore
+
+# Copy everything else
+COPY . .
+
+# Enable hot reload
+ENV DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+
+EXPOSE 80
+EXPOSE 443
+
+# Start with hot reload
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://+:80;https://+:443"] 

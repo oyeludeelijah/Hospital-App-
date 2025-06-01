@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./HospitalApi
+      dockerfile: Dockerfile.development
+    ports:
+      - "5000:80"
+      - "5001:443"
+      - "5901:5901" # VS debugger port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/hospital_dev
+      - JWT_KEY=your-development-jwt-key-min-32-chars
+      - VSTEST_HOST_DEBUG=1
+    volumes:
+      - ./HospitalApi:/src
+      - ${HOME}/.nuget/packages:/root/.nuget/packages:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=hospital_dev
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@hospital.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_dev_data: 
