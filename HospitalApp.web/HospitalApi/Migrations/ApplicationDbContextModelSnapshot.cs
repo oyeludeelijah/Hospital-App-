@@ -97,6 +97,9 @@ namespace HospitalApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
+
                     b.HasIndex("UserId")
                         .IsUnique();
 
@@ -359,7 +362,20 @@ namespace HospitalApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PatientNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientNumber")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Patients");
                 });
@@ -583,9 +599,6 @@ namespace HospitalApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -599,7 +612,11 @@ namespace HospitalApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -712,6 +729,17 @@ namespace HospitalApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.Patient", b =>
+                {
+                    b.HasOne("HospitalApp.Web.HospitalApi.Models.User", "User")
+                        .WithOne("Patient")
+                        .HasForeignKey("HospitalApp.Web.HospitalApi.Models.Patient", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.Prescription", b =>
                 {
                     b.HasOne("HospitalApp.Web.HospitalApi.Models.Doctor", "Doctor")
@@ -754,15 +782,6 @@ namespace HospitalApi.Migrations
                     b.Navigation("Medication");
 
                     b.Navigation("Prescription");
-                });
-
-            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.User", b =>
-                {
-                    b.HasOne("HospitalApp.Web.HospitalApi.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.Appointment", b =>
@@ -808,6 +827,8 @@ namespace HospitalApi.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Nurse");
+
+                    b.Navigation("Patient");
                 });
 #pragma warning restore 612, 618
         }

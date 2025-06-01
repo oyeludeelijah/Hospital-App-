@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250530094116_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250601222117_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,10 +100,13 @@ namespace HospitalApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
+
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Doctor");
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.DoctorSchedule", b =>
@@ -362,7 +365,20 @@ namespace HospitalApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PatientNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientNumber")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Patients");
                 });
@@ -439,6 +455,122 @@ namespace HospitalApi.Migrations
                     b.ToTable("PrescriptionItem");
                 });
 
+            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.SimpleAppointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DoctorName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SimpleAppointments");
+                });
+
+            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.SimpleBilling", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("BillingDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SimpleBillings");
+                });
+
+            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.SimpleDepartment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DoctorCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SimpleDepartments");
+                });
+
+            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.SimpleDoctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SimpleDoctors");
+                });
+
             modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -470,9 +602,6 @@ namespace HospitalApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -486,7 +615,11 @@ namespace HospitalApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -599,6 +732,17 @@ namespace HospitalApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.Patient", b =>
+                {
+                    b.HasOne("HospitalApp.Web.HospitalApi.Models.User", "User")
+                        .WithOne("Patient")
+                        .HasForeignKey("HospitalApp.Web.HospitalApi.Models.Patient", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.Prescription", b =>
                 {
                     b.HasOne("HospitalApp.Web.HospitalApi.Models.Doctor", "Doctor")
@@ -641,15 +785,6 @@ namespace HospitalApi.Migrations
                     b.Navigation("Medication");
 
                     b.Navigation("Prescription");
-                });
-
-            modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.User", b =>
-                {
-                    b.HasOne("HospitalApp.Web.HospitalApi.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("HospitalApp.Web.HospitalApi.Models.Appointment", b =>
@@ -695,6 +830,8 @@ namespace HospitalApi.Migrations
                     b.Navigation("Doctor");
 
                     b.Navigation("Nurse");
+
+                    b.Navigation("Patient");
                 });
 #pragma warning restore 612, 618
         }
