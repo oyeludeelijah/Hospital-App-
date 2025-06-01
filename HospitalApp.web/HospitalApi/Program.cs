@@ -180,6 +180,30 @@ if (!app.Environment.IsDevelopment())
             try
             {
                 logger.LogInformation("Attempting database migration...");
+                
+                // Ensure database exists
+                await db.Database.EnsureCreatedAsync();
+                
+                // Check if migrations table exists
+                var migrationTableExists = await db.Database.ExecuteSqlRawAsync(@"
+                    SELECT EXISTS (
+                        SELECT FROM pg_tables 
+                        WHERE schemaname = 'public' 
+                        AND tablename = '__EFMigrationsHistory'
+                    );") > 0;
+
+                if (!migrationTableExists)
+                {
+                    logger.LogInformation("Creating migrations history table...");
+                    await db.Database.ExecuteSqlRawAsync(@"
+                        CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
+                            ""MigrationId"" character varying(150) NOT NULL,
+                            ""ProductVersion"" character varying(32) NOT NULL,
+                            CONSTRAINT ""PK___EFMigrationsHistory"" PRIMARY KEY (""MigrationId"")
+                        );");
+                }
+
+                // Apply migrations
                 await db.Database.MigrateAsync();
                 logger.LogInformation("Database migration successful");
                 break;
@@ -188,7 +212,11 @@ if (!app.Environment.IsDevelopment())
             {
                 logger.LogError(ex, $"Migration attempt {retryCount + 1} failed");
                 retryCount++;
-                if (retryCount == maxRetries) throw;
+                if (retryCount == maxRetries)
+                {
+                    logger.LogCritical("All migration attempts failed. Application startup will be terminated.");
+                    throw;
+                }
                 await Task.Delay(2000 * retryCount);
             }
         }
