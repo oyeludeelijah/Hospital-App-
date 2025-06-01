@@ -25,14 +25,23 @@ static string ConvertPostgresUrlToConnectionString(string databaseUrl)
         var uri = new Uri(databaseUrl);
         var userInfo = uri.UserInfo.Split(':');
         var host = uri.Host;
-        var port = uri.Port;
+        var port = uri.Port > 0 ? uri.Port : 5432; // Use default PostgreSQL port if not specified
         var database = uri.AbsolutePath.TrimStart('/');
 
-        return $"Host={host};Port={port};Database={database};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+        var builder = new StringBuilder();
+        builder.Append($"Host={host};");
+        builder.Append($"Port={port};");
+        builder.Append($"Database={database};");
+        builder.Append($"Username={userInfo[0]};");
+        builder.Append($"Password={userInfo[1]};");
+        builder.Append("SSL Mode=Require;");
+        builder.Append("Trust Server Certificate=true");
+
+        return builder.ToString();
     }
     catch (Exception ex)
     {
-        throw new ArgumentException($"Invalid database URL format: {ex.Message}");
+        throw new ArgumentException($"Invalid database URL format: {ex.Message}", ex);
     }
 }
 
