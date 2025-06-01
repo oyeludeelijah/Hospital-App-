@@ -99,10 +99,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             npgsqlOptions.EnableRetryOnFailure(5);
             npgsqlOptions.CommandTimeout(30);
         });
-        options.ConfigureWarnings(warnings => warnings.Log(
-            RelationalEventId.ConnectionOpened,
-            RelationalEventId.ConnectionClosed
-        ));
+        options.ConfigureWarnings(warnings => 
+        {
+            warnings.Log(RelationalEventId.ConnectionOpened, RelationalEventId.ConnectionClosed);
+            warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning);
+            warnings.Ignore(CoreEventId.PossibleIncorrectRequiredNavigationWithQueryFilteringWarning);
+            // Suppress the pending model changes warning in production
+            warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.ManyServiceProvidersCreatedWarning);
+            warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning);
+        });
     }
 });
 
