@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using HospitalApp.Web.HospitalApi.Models;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace HospitalApp.Web.HospitalApi.Data
 {
