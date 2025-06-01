@@ -103,9 +103,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
             warnings.Log(RelationalEventId.ConnectionOpened, RelationalEventId.ConnectionClosed);
             warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning);
-            // Suppress the pending model changes warning in production
-            warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning);
+            warnings.Ignore(RelationalEventId.PendingModelChangesWarning);
         });
+        // Disable change tracking for better performance in production
+        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 });
 
@@ -183,25 +184,6 @@ if (!app.Environment.IsDevelopment())
                 
                 // Ensure database exists
                 await db.Database.EnsureCreatedAsync();
-                
-                // Check if migrations table exists
-                var migrationTableExists = await db.Database.ExecuteSqlRawAsync(@"
-                    SELECT EXISTS (
-                        SELECT FROM pg_tables 
-                        WHERE schemaname = 'public' 
-                        AND tablename = '__EFMigrationsHistory'
-                    );") > 0;
-
-                if (!migrationTableExists)
-                {
-                    logger.LogInformation("Creating migrations history table...");
-                    await db.Database.ExecuteSqlRawAsync(@"
-                        CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
-                            ""MigrationId"" character varying(150) NOT NULL,
-                            ""ProductVersion"" character varying(32) NOT NULL,
-                            CONSTRAINT ""PK___EFMigrationsHistory"" PRIMARY KEY (""MigrationId"")
-                        );");
-                }
 
                 // Apply migrations
                 await db.Database.MigrateAsync();

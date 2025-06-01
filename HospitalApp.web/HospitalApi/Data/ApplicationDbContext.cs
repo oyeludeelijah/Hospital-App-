@@ -8,6 +8,8 @@ namespace HospitalApp.Web.HospitalApi.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            // Disable change tracking for better performance in production
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public DbSet<User> Users { get; set; } = null!;
@@ -21,7 +23,44 @@ namespace HospitalApp.Web.HospitalApi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Add specific model configurations here if needed
+
+            // Configure entity relationships and constraints
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(e => e.Username).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
+            });
+
+            modelBuilder.Entity<Doctor>(entity =>
+            {
+                entity.HasIndex(e => e.LicenseNumber).IsUnique();
+                entity.HasOne(d => d.User)
+                    .WithOne()
+                    .HasForeignKey<Doctor>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Patient>(entity =>
+            {
+                entity.HasIndex(e => e.PatientNumber).IsUnique();
+                entity.HasOne(p => p.User)
+                    .WithOne()
+                    .HasForeignKey<Patient>(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.ConfigureWarnings(warnings =>
+                {
+                    warnings.Log(RelationalEventId.ConnectionOpened, RelationalEventId.ConnectionClosed);
+                    warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning);
+                    warnings.Ignore(RelationalEventId.PendingModelChangesWarning);
+                });
+            }
         }
     }
 }
