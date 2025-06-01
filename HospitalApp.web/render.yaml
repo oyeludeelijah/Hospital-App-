@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: hospital-api
+    env: docker
+    region: ohio  # Choose your preferred region
+    plan: free
+    dockerfilePath: ./HospitalApi/Dockerfile  # Path to your Dockerfile
+    dockerContext: ./HospitalApi  # Context for Docker build
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: JWT_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hospital-db
+          property: connectionString
+
+  - type: postgresql
+    name: hospital-db
+    region: ohio  # Same region as your web service
+    plan: free
+    ipAllowList: []  # Only allow internal connections
+    user: postgres
+    database: hospital_prod

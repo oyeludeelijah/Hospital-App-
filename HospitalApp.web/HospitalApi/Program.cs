@@ -4,29 +4,63 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using HospitalApp.Web.HospitalApi.Data;
 using HospitalApp.Web.HospitalApi.Services;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
 
-// Configure CORS for development - completely permissive
+// Configure environment-specific CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
+        else
+        {
+            policy.WithOrigins(builder.Configuration["AllowedOrigins"]?.Split(',') ?? 
+                             new[] { "https://your-frontend-domain.com" })
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
     });
 });
 
-// Add Database Context
+// Add Database Context with environment-specific configuration
+var connectionString = builder.Environment.IsDevelopment()
+    ? builder.Configuration.GetConnectionString("DefaultConnection")
+    : Environment.GetEnvironmentVariable("DATABASE_URL");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=hospital.db"));
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        options.UseSqlite(connectionString);
+        options.EnableDetailedErrors();
+    }
+    else
+    {
+        options.UseNpgsql(connectionString, npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure(5);
+            npgsqlOptions.CommandTimeout(30);
+        });
+    }
+});
 
 // Register Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Add Health Checks
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>();
 
 // Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -39,28 +73,45 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "HospitalApp",
             ValidAudience = builder.Configuration["Jwt:Audience"] ?? "HospitalAppUser",
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "DefaultSecretKeyForHospitalApp123!@#"))
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY") ?? 
+                    builder.Configuration["Jwt:Key"] ?? 
+                    throw new InvalidOperationException("JWT key not configured")))
         };
     });
 
 var app = builder.Build();
 
-// Simple test endpoint
-app.MapGet("/api/hello", () => new { message = "API is working!", timestamp = DateTime.Now });
+// Configure error handling for production
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/error");
+    app.UseHsts();
+}
 
 // Configure middleware
 app.UseHttpsRedirection();
 app.UseRouting();
 
-// Debug middleware to log requests
-app.Use(async (context, next) =>
+// Health check endpoint
+app.MapHealthChecks("/health", new HealthCheckOptions
 {
-    Console.WriteLine($"Request received: {context.Request.Method} {context.Request.Path}");
-    await next();
-    Console.WriteLine($"Response status: {context.Response.StatusCode}");
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            })
+        });
+    }
 });
 
-// Apply CORS - completely permissive for development
+// Apply CORS
 app.UseCors();
 
 // Add Authentication middleware
@@ -68,5 +119,32 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Ensure database is ready (with retry for production)
+if (!app.Environment.IsDevelopment())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount < maxRetries)
+        {
+            try
+            {
+                db.Database.Migrate();
+                break;
+            }
+            catch (Exception ex)
+            {
+                retryCount++;
+                if (retryCount == maxRetries)
+                    throw;
+                Thread.Sleep(2000 * retryCount); // Exponential backoff
+            }
+        }
+    }
+}
 
 app.Run();
