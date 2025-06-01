@@ -77,7 +77,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             npgsqlOptions.CommandTimeout(30);
         });
         options.ConfigureWarnings(warnings => warnings.Log(
-            CoreEventId.SensitiveDataLoggingEnabled
+            RelationalEventId.ConnectionOpened,
+            RelationalEventId.ConnectionClosed
         ));
     }
 });
