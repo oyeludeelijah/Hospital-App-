@@ -92,7 +92,7 @@ namespace HospitalApp.Web.HospitalApi.Services
                     FirstName = userDto.FirstName,
                     LastName = userDto.LastName,
                     Role = userDto.Role,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
                 
                 Console.WriteLine($"Creating user with Role: {userDto.Role}");
@@ -154,7 +154,7 @@ namespace HospitalApp.Web.HospitalApi.Services
                 }
 
                 // Update last login
-                user.LastLogin = DateTime.Now;
+                user.LastLogin = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
                 // Generate token
